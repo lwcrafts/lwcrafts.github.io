@@ -1,0 +1,504 @@
+:root {
+	color-scheme: dark;
+	--home-canvas: #16161e;
+	--home-surface: #1a1b26;
+	--home-chrome: #24283b;
+	--home-hover: #2f354d;
+	--home-gutter: #1b1c28;
+	--home-shadow: #101018;
+	--home-border: #3b4261;
+	--home-border-subtle: #292e42;
+	--home-border-contrast: #a9b1d6;
+	--home-text: #c0caf5;
+	--home-text-secondary: #a9b1d6;
+	--home-text-muted: #737da8;
+	--home-on-accent: #16161e;
+	--home-blue: #7aa2f7;
+	--home-cyan: #7dcfff;
+	--home-purple: #bb9af7;
+	--home-warm: #e0af68;
+	--home-success: #9ece6a;
+	--home-focus: #7aa2f7;
+	--home-selection: #364a82;
+	--home-selection-text: #ffffff;
+	--home-transparent: transparent;
+}
+
+:root[data-theme='day'] {
+	color-scheme: light;
+	--home-canvas: #e1e2e7;
+	--home-surface: #e6e7ed;
+	--home-chrome: #d6d8df;
+	--home-hover: #cdd0da;
+	--home-gutter: #dadce3;
+	--home-shadow: #c1c2c7;
+	--home-border: #8990b3;
+	--home-border-subtle: #a8aecb;
+	--home-border-contrast: #2e5857;
+	--home-text: #343b58;
+	--home-text-secondary: #343b58;
+	--home-text-muted: #4a5272;
+	--home-on-accent: #ffffff;
+	--home-blue: #3760bf;
+	--home-cyan: #006a83;
+	--home-purple: #7847bd;
+	--home-warm: #8f5e15;
+	--home-success: #385f0d;
+	--home-focus: #2e5857;
+	--home-selection: #b4c1e6;
+	--home-selection-text: #343b58;
+}
+
+body.editor-page {
+	min-width: 0;
+	min-height: 100vh;
+	margin: 0;
+	background: var(--home-canvas);
+	color: var(--home-text);
+	font-family:
+		ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Cascadia Mono', 'PingFang SC',
+		'Microsoft YaHei', monospace;
+	font-size: 16px;
+	line-height: 1.75;
+}
+
+body.editor-page *,
+body.editor-page *::before,
+body.editor-page *::after {
+	box-sizing: border-box;
+}
+
+body.editor-page ::selection {
+	background: var(--home-selection);
+	color: var(--home-selection-text);
+}
+
+body.editor-page a {
+	color: inherit;
+}
+
+body.editor-page main.editor {
+	width: 100%;
+	max-width: none;
+	margin: 0;
+	padding: 0;
+	outline: none;
+}
+
+body.editor-page .skip-link {
+	position: fixed;
+	z-index: 10;
+	left: 1rem;
+	top: -4rem;
+	padding: 0.6rem 0.85rem;
+	background: var(--home-blue);
+	color: var(--home-on-accent);
+	font-weight: 700;
+	text-decoration: none;
+	transition: top 160ms ease;
+}
+
+body.editor-page .skip-link:focus {
+	top: 1rem;
+}
+
+body.editor-page .workspace {
+	width: min(1120px, calc(100% - 2rem));
+	margin: clamp(1rem, 5vw, 5rem) auto 0;
+	border: 1px solid var(--home-border);
+	background: var(--home-surface);
+	box-shadow: 14px 14px 0 var(--home-shadow);
+}
+
+body.editor-page .tab-bar {
+	display: flex;
+	min-height: 3rem;
+	align-items: stretch;
+	justify-content: space-between;
+	border-bottom: 1px solid var(--home-border);
+	background: var(--home-chrome);
+}
+
+body.editor-page .tabs,
+body.editor-page .tab-actions {
+	display: flex;
+	min-width: 0;
+}
+
+body.editor-page .tab-actions {
+	flex: 0 0 auto;
+	align-items: stretch;
+}
+
+body.editor-page .tab {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+	padding: 0.7rem 1rem;
+	border-right: 1px solid var(--home-border);
+	color: var(--home-text-secondary);
+	font-size: 0.86rem;
+	text-decoration: none;
+}
+
+body.editor-page .tab:hover {
+	background: var(--home-hover);
+	color: var(--home-text);
+}
+
+body.editor-page .tab--active {
+	position: relative;
+	background: var(--home-surface);
+	color: var(--home-purple);
+}
+
+body.editor-page .tab--active::before {
+	position: absolute;
+	inset: 0 0 auto;
+	height: 2px;
+	background: var(--home-purple);
+	content: '';
+}
+
+body.editor-page .tab-mark {
+	color: var(--home-cyan);
+}
+
+body.editor-page .directory {
+	align-self: center;
+	margin: 0;
+	padding: 0 1rem;
+	color: var(--home-text-muted);
+	font-size: 0.78rem;
+	white-space: nowrap;
+}
+
+body.editor-page .theme-toggle {
+	display: inline-flex;
+	min-width: 3rem;
+	min-height: 3rem;
+	align-items: center;
+	justify-content: center;
+	gap: 0.4rem;
+	padding: 0.5rem 0.75rem;
+	border: 0;
+	border-left: 1px solid var(--home-border);
+	background: var(--home-chrome);
+	color: var(--home-text-secondary);
+	font: inherit;
+	font-size: 0.75rem;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	cursor: pointer;
+}
+
+body.editor-page .theme-toggle:hover {
+	background: var(--home-hover);
+	color: var(--home-cyan);
+}
+
+body.editor-page .theme-toggle__icon {
+	font-size: 1rem;
+	line-height: 1;
+}
+
+body.editor-page .theme-toggle__label {
+	white-space: nowrap;
+}
+
+body.editor-page .buffer-head {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 0.5rem 1rem;
+	border-bottom: 1px solid var(--home-border-subtle);
+	color: var(--home-text-muted);
+	font-size: 0.78rem;
+}
+
+body.editor-page .buffer-head span {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+body.editor-page .buffer {
+	display: grid;
+	grid-template-columns: 4rem minmax(0, 1fr);
+	min-height: min(66vh, 650px);
+}
+
+body.editor-page .gutter {
+	display: flex;
+	flex-direction: column;
+	gap: 0.1rem;
+	padding: clamp(1.5rem, 4vw, 4rem) 0.9rem;
+	border-right: 1px solid var(--home-border-subtle);
+	background: var(--home-gutter);
+	color: var(--home-text-muted);
+	font-size: 0.76rem;
+	line-height: 1.75;
+	text-align: right;
+	user-select: none;
+}
+
+body.editor-page .buffer-content {
+	min-width: 0;
+	padding: clamp(1.75rem, 6vw, 5.5rem) clamp(1.25rem, 6vw, 6.5rem);
+}
+
+body.editor-page .status-line {
+	display: flex;
+	justify-content: space-between;
+	gap: 1rem;
+	padding: 0.45rem 0.75rem;
+	background: var(--home-chrome);
+	color: var(--home-text-secondary);
+	font-size: 0.75rem;
+}
+
+body.editor-page .status-line p {
+	min-width: 0;
+	margin: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+body.editor-page .mode {
+	display: inline-block;
+	margin-right: 0.5rem;
+	padding: 0.05rem 0.3rem;
+	background: var(--home-success);
+	color: var(--home-on-accent);
+	font-weight: 800;
+}
+
+body.editor-page .comment {
+	margin: 0;
+	color: var(--home-text-muted);
+	font-size: 0.86rem;
+}
+
+body.editor-page .visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
+}
+
+body.editor-page .tab:focus-visible,
+body.editor-page .theme-toggle:focus-visible,
+body.editor-page .editor-link:focus-visible,
+body.editor-page .file-list__link:focus-visible {
+	outline: 2px solid var(--home-focus);
+	outline-offset: 2px;
+}
+
+body.editor-page .editor-prose {
+	max-width: 46rem;
+	color: var(--home-text-secondary);
+	font-size: clamp(0.96rem, 1.7vw, 1.08rem);
+	line-height: 1.9;
+}
+
+body.editor-page .editor-prose > :first-child {
+	margin-top: 0;
+}
+
+body.editor-page .editor-prose h2,
+body.editor-page .editor-prose h3,
+body.editor-page .editor-prose h4,
+body.editor-page .editor-prose h5,
+body.editor-page .editor-prose h6 {
+	margin: 2.5em 0 0.7em;
+	color: var(--home-blue);
+	font: inherit;
+	font-weight: 800;
+	line-height: 1.35;
+}
+
+body.editor-page .editor-prose h2 {
+	font-size: 1.55em;
+}
+
+body.editor-page .editor-prose h3 {
+	font-size: 1.25em;
+	color: var(--home-cyan);
+}
+
+body.editor-page .editor-prose p,
+body.editor-page .editor-prose ul,
+body.editor-page .editor-prose ol,
+body.editor-page .editor-prose blockquote {
+	margin: 0 0 1.5em;
+}
+
+body.editor-page .editor-prose ul,
+body.editor-page .editor-prose ol {
+	padding-left: 1.5em;
+}
+
+body.editor-page .editor-prose li + li {
+	margin-top: 0.4em;
+}
+
+body.editor-page .editor-prose a {
+	color: var(--home-cyan);
+	text-decoration-color: color-mix(in srgb, var(--home-cyan), transparent 45%);
+	text-underline-offset: 0.18em;
+}
+
+body.editor-page .editor-prose a:hover {
+	color: var(--home-purple);
+}
+
+body.editor-page .editor-prose :not(pre) > code,
+body.editor-page .editor-prose kbd,
+body.editor-page .editor-prose mark {
+	padding: 0.08em 0.32em;
+	border: 1px solid var(--home-border);
+	border-radius: 2px;
+	background: var(--home-chrome);
+	color: var(--home-warm);
+	font: inherit;
+}
+
+body.editor-page .editor-prose mark {
+	background: var(--home-warm);
+	color: var(--home-on-accent);
+}
+
+body.editor-page .editor-prose pre {
+	max-width: 100%;
+	margin: 1.75em 0;
+	overflow-x: auto;
+	padding: 1.15rem 1.3rem;
+	border: 1px solid var(--home-border);
+	border-radius: 0;
+	background: var(--home-gutter);
+	color: var(--home-text);
+}
+
+body.editor-page .editor-prose pre > code {
+	all: unset;
+	font: inherit;
+}
+
+body.editor-page .editor-prose blockquote {
+	padding-left: 1.15rem;
+	border-left: 3px solid var(--home-purple);
+	color: var(--home-text-secondary);
+	font-size: inherit;
+}
+
+body.editor-page .editor-prose hr {
+	margin: 2.5em 0;
+	border: 0;
+	border-top: 1px solid var(--home-border);
+}
+
+body.editor-page .editor-prose table {
+	display: block;
+	width: 100%;
+	overflow-x: auto;
+	border-collapse: collapse;
+	font-size: 0.9em;
+}
+
+body.editor-page .editor-prose th,
+body.editor-page .editor-prose td {
+	padding: 0.55rem 0.7rem;
+	border: 1px solid var(--home-border);
+	text-align: left;
+}
+
+body.editor-page .editor-prose th {
+	background: var(--home-chrome);
+	color: var(--home-blue);
+}
+
+body.editor-page .editor-prose img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	margin: 1.75em auto;
+	border: 1px solid var(--home-border);
+	border-radius: 0;
+}
+
+@media (max-width: 640px) {
+	body.editor-page .workspace {
+		width: 100%;
+		margin-top: 0;
+		border-inline: 0;
+		box-shadow: none;
+	}
+
+	body.editor-page .directory {
+		display: none;
+	}
+
+	body.editor-page .theme-toggle {
+		padding-inline: 0.65rem;
+	}
+
+	body.editor-page .tab-bar {
+		position: sticky;
+		top: 0;
+		z-index: 2;
+	}
+
+	body.editor-page .tab {
+		padding-inline: 0.8rem;
+	}
+
+	body.editor-page .buffer {
+		grid-template-columns: 2.7rem minmax(0, 1fr);
+		min-height: calc(100svh - 6rem);
+	}
+
+	body.editor-page .gutter {
+		padding-inline: 0.55rem;
+	}
+
+	body.editor-page .buffer-content {
+		padding-block: 3rem;
+	}
+
+	body.editor-page .status-line p:last-child {
+		max-width: 50%;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	body.editor-page *,
+	body.editor-page *::before,
+	body.editor-page *::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		scroll-behavior: auto !important;
+		transition-duration: 0.01ms !important;
+	}
+}
+
+@media (prefers-contrast: more) {
+	body.editor-page .workspace,
+	body.editor-page .tab,
+	body.editor-page .theme-toggle,
+	body.editor-page .gutter,
+	body.editor-page .buffer-head,
+	body.editor-page .editor-prose th,
+	body.editor-page .editor-prose td,
+	body.editor-page .editor-prose pre {
+		border-color: var(--home-border-contrast);
+	}
+
+	body.editor-page .comment,
+	body.editor-page .directory {
+		color: var(--home-text-secondary);
+	}
+}

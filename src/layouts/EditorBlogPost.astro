@@ -1,0 +1,100 @@
+---
+import type { ImageMetadata } from 'astro';
+import EditorWorkspace from '../components/EditorWorkspace.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { SITE_TITLE } from '../consts';
+
+interface Props {
+	title: string;
+	description: string;
+	pubDate: Date;
+	updatedDate?: Date;
+	heroImage?: ImageMetadata;
+	fileName: string;
+}
+
+const { title, description, pubDate, updatedDate, heroImage, fileName } = Astro.props;
+---
+
+<EditorWorkspace
+	title={`${title} · ${SITE_TITLE}`}
+	description={description}
+	image={heroImage}
+	activeTab="articles"
+	currentFile={fileName}
+	bufferState="[RO]"
+	gutterLineCount={24}
+	mainLabelledBy="post-title"
+	pageClass="blog-post"
+>
+	<article class="post" aria-labelledby="post-title">
+		<a class="post__back editor-link" href="/blog/"><span aria-hidden="true">← </span>返回文章目录</a>
+		<p class="comment">// 文件信息</p>
+		<div class="post__meta">
+			<p>
+				<span>发布于 </span><FormattedDate date={pubDate} locale="zh-CN" />
+			</p>
+			{
+				updatedDate && (
+					<p>
+						<span>更新于 </span><FormattedDate date={updatedDate} locale="zh-CN" />
+					</p>
+				)
+			}
+		</div>
+		<h1 id="post-title" class="post__title"><span aria-hidden="true"># </span>{title}</h1>
+		<div class="post__divider" aria-hidden="true"></div>
+		<div class="editor-prose"><slot /></div>
+	</article>
+</EditorWorkspace>
+
+<style>
+	.post {
+		min-width: 0;
+	}
+
+	.post__back {
+		display: inline-flex;
+		margin-bottom: clamp(2.5rem, 6vw, 4rem);
+		padding: 0.25rem 0.45rem;
+		border: 1px solid transparent;
+		color: var(--home-cyan);
+		font-size: 0.86rem;
+		font-weight: 700;
+		text-decoration: none;
+	}
+
+	.post__back:hover {
+		border-color: var(--home-border);
+		background: var(--home-chrome);
+	}
+
+	.post__meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem 1rem;
+		margin-top: 0.35rem;
+		color: var(--home-text-muted);
+		font-size: 0.86rem;
+	}
+
+	.post__meta p {
+		margin: 0;
+	}
+
+	.post__title {
+		margin: 0.65rem 0 0;
+		color: var(--home-blue);
+		font-size: clamp(2.2rem, 7vw, 4.8rem);
+		font-weight: 700;
+		letter-spacing: -0.06em;
+		line-height: 1.14;
+		overflow-wrap: anywhere;
+	}
+
+	.post__divider {
+		width: min(100%, 46rem);
+		margin: clamp(2rem, 5vw, 3.5rem) 0;
+		border-top: 1px solid var(--home-border);
+	}
+</style>

@@ -1,49 +1,243 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
+import EditorWorkspace from '../components/EditorWorkspace.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
-</html>
+<EditorWorkspace
+	title={SITE_TITLE}
+	description={SITE_DESCRIPTION}
+	activeTab="home"
+	currentFile="README.md"
+	bufferState="[+]"
+	mainLabelledBy="identity-title"
+	pageClass="home"
+>
+	<article aria-labelledby="identity-title">
+		<p class="comment">// hello, world.</p>
+		<h1 id="identity-title"><span aria-hidden="true"># </span>LW<span class="cursor" aria-hidden="true"></span></h1>
+		<p class="role"><span class="operator" aria-hidden="true">&gt;</span> 独立开发者 <span aria-hidden="true">/</span> 全栈工程师</p>
+
+		<div class="introduction">
+			<p>从想法到真实可用的产品。</p>
+			<p>专注把复杂的事情做得清晰、可靠、好用。</p>
+		</div>
+
+		<div class="next-step">
+			<p class="comment">// 下一页</p>
+			<a class="blog-link editor-link" href="/blog/">
+				<span aria-hidden="true">:e </span>阅读文章<span aria-hidden="true"> ↵</span>
+			</a>
+		</div>
+
+		<form id="command-form" class="command-line">
+			<label class="visually-hidden" for="vim-command">输入 Vim 命令</label>
+			<span class="prompt" aria-hidden="true">:</span>
+			<input
+				id="vim-command"
+				name="command"
+				type="text"
+				autocomplete="off"
+				spellcheck="false"
+				placeholder="输入 :blog 或 :help"
+			/>
+			<button type="submit">执行</button>
+		</form>
+		<p id="command-status" class="command-status" role="status" aria-live="polite"></p>
+	</article>
+
+	<p slot="after-workspace" class="site-credit">© {new Date().getFullYear()} LW</p>
+</EditorWorkspace>
+
+<script>
+	const form = document.querySelector<HTMLFormElement>('#command-form');
+	const input = document.querySelector<HTMLInputElement>('#vim-command');
+	const status = document.querySelector<HTMLParagraphElement>('#command-status');
+
+	form?.addEventListener('submit', (event) => {
+		event.preventDefault();
+
+		if (!input || !status) return;
+
+		const command = input.value.trim().toLowerCase();
+		status.removeAttribute('data-state');
+
+		if ([':blog', 'blog', ':e blog'].includes(command)) {
+			window.location.assign('/blog/');
+			return;
+		}
+
+		if (command === ':help' || command === 'help') {
+			status.textContent = '可用命令：:blog 打开文章，:help 查看帮助。';
+			status.dataset.state = 'success';
+			return;
+		}
+
+		status.textContent = '未识别命令。试试 :blog 或 :help。';
+		status.dataset.state = 'error';
+	});
+</script>
+
+<style>
+	h1 {
+		margin: 0.25rem 0 0;
+		color: var(--home-blue);
+		font-size: clamp(3.25rem, 12vw, 7.5rem);
+		font-weight: 700;
+		letter-spacing: -0.08em;
+		line-height: 1;
+	}
+
+	.cursor {
+		display: inline-block;
+		width: 0.55ch;
+		height: 0.86em;
+		margin-left: 0.14ch;
+		background: var(--home-text);
+		vertical-align: -0.02em;
+		animation: blink 1.2s steps(1, end) infinite;
+	}
+
+	.role {
+		margin: 1rem 0 0;
+		color: var(--home-text);
+		font-size: clamp(1rem, 2.2vw, 1.35rem);
+		font-weight: 700;
+	}
+
+	.operator,
+	.prompt {
+		color: var(--home-warm);
+	}
+
+	.introduction {
+		max-width: 35rem;
+		margin-top: clamp(3rem, 7vw, 6rem);
+	}
+
+	.introduction p {
+		margin: 0;
+		color: var(--home-text-secondary);
+		font-size: clamp(1rem, 1.7vw, 1.16rem);
+	}
+
+	.introduction p + p {
+		margin-top: 0.45rem;
+	}
+
+	.next-step {
+		margin-top: clamp(2.75rem, 6vw, 5rem);
+	}
+
+	.blog-link {
+		display: inline-flex;
+		margin-top: 0.65rem;
+		padding: 0.35rem 0.55rem;
+		border: 1px solid var(--home-transparent);
+		color: var(--home-cyan) !important;
+		font-weight: 700;
+		text-decoration: none;
+	}
+
+	.blog-link:hover {
+		border-color: var(--home-border);
+		background: var(--home-chrome);
+	}
+
+	.command-line {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 0.5rem;
+		max-width: 38rem;
+		margin-top: clamp(2.75rem, 6vw, 5rem);
+		padding-block: 0.45rem;
+		border-bottom: 1px solid var(--home-border);
+	}
+
+	.prompt {
+		font-size: 1.25rem;
+		font-weight: 700;
+	}
+
+	.command-line input {
+		width: 100%;
+		min-width: 0;
+		border: 0;
+		outline: none;
+		background: var(--home-transparent);
+		color: var(--home-text);
+		font: inherit;
+	}
+
+	.command-line input::placeholder {
+		color: var(--home-text-muted);
+		opacity: 1;
+	}
+
+	.command-line:focus-within {
+		border-bottom-color: var(--home-focus);
+	}
+
+	.command-line button {
+		padding: 0.25rem 0.55rem;
+		border: 1px solid var(--home-border);
+		background: var(--home-chrome);
+		color: var(--home-text);
+		font: inherit;
+		font-size: 0.78rem;
+		cursor: pointer;
+	}
+
+	.command-line button:hover {
+		border-color: var(--home-focus);
+		color: var(--home-cyan);
+	}
+
+	.command-line button:focus-visible {
+		outline: 2px solid var(--home-focus);
+		outline-offset: 2px;
+	}
+
+	.command-status {
+		min-height: 1.75em;
+		margin: 0.6rem 0 0;
+		color: var(--home-text-muted);
+		font-size: 0.82rem;
+	}
+
+	.command-status[data-state='success'] {
+		color: var(--home-success);
+	}
+
+	.command-status[data-state='error'] {
+		color: var(--home-warm);
+	}
+
+	.site-credit {
+		margin: 1rem 0 2rem;
+		color: var(--home-text-muted);
+		font-family:
+			ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Cascadia Mono', 'PingFang SC',
+			'Microsoft YaHei', monospace;
+		font-size: 0.75rem;
+		text-align: center;
+	}
+
+	@keyframes blink {
+		50% {
+			opacity: 0;
+		}
+	}
+
+	@media (max-width: 640px) {
+		h1 {
+			letter-spacing: -0.06em;
+		}
+	}
+
+	@media (prefers-contrast: more) {
+		.site-credit {
+			color: var(--home-text-secondary);
+		}
+	}
+</style>

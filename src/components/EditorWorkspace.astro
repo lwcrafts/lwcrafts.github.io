@@ -1,0 +1,166 @@
+---
+import BaseHead from './BaseHead.astro';
+import '../styles/editor.css';
+
+interface Props {
+	title: string;
+	description: string;
+	activeTab: 'home' | 'articles';
+	currentFile: string;
+	bufferState?: string;
+	gutterLineCount?: number;
+	mainLabelledBy?: string;
+	pageClass?: string;
+	image?: ImageMetadata;
+}
+
+const {
+	title,
+	description,
+	activeTab,
+	currentFile,
+	bufferState = '[RO]',
+	gutterLineCount = 12,
+	mainLabelledBy,
+	pageClass = '',
+	image,
+} = Astro.props;
+
+const gutterLines = Array.from({ length: gutterLineCount }, (_, index) => index + 1);
+---
+
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<BaseHead title={title} description={description} image={image} />
+		<script is:inline>
+			(() => {
+				const storageKey = 'lw-home-theme';
+				let theme = 'night';
+
+				try {
+					const savedTheme = window.localStorage.getItem(storageKey);
+					if (savedTheme === 'day' || savedTheme === 'night') {
+						theme = savedTheme;
+					} else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+						theme = 'day';
+					}
+				} catch {
+					try {
+						if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+							theme = 'day';
+						}
+					} catch {
+						// Keep the Night default when browser preferences are unavailable.
+					}
+				}
+
+				document.documentElement.dataset.theme = theme;
+			})();
+		</script>
+	</head>
+	<body class:list={['editor-page', pageClass]}>
+		<a class="skip-link" href="#main-content">跳至主要内容</a>
+
+		<div class="workspace">
+			<header class="tab-bar">
+				<nav aria-label="主导航" class="tabs">
+					<a class:list={['tab', { 'tab--active': activeTab === 'home' }]} href="/" aria-current={activeTab === 'home' ? 'page' : undefined}>
+						<span class="tab-mark" aria-hidden="true">~</span>
+						README.md
+					</a>
+					<a class:list={['tab', { 'tab--active': activeTab === 'articles' }]} href="/blog/" aria-current={activeTab === 'articles' ? 'page' : undefined}>
+						articles/
+					</a>
+				</nav>
+				<div class="tab-actions">
+					<p class="directory" aria-label="当前目录">~/lw</p>
+					<button
+						id="theme-toggle"
+						class="theme-toggle"
+						type="button"
+						aria-pressed="false"
+						aria-label="夜间主题已启用；切换至日间主题"
+					>
+						<span class="theme-toggle__icon" aria-hidden="true">☾</span>
+						<span class="theme-toggle__label" aria-hidden="true">NIGHT</span>
+					</button>
+				</div>
+			</header>
+
+			<main id="main-content" class="editor" tabindex="-1" aria-labelledby={mainLabelledBy}>
+				<div class="buffer-head" aria-hidden="true">
+					<span>{currentFile}</span>
+					<span>{bufferState}</span>
+				</div>
+
+				<div class="buffer">
+					<aside class="gutter" aria-hidden="true">
+						{gutterLines.map((line) => <span>{line}</span>)}
+					</aside>
+
+					<div class="buffer-content">
+						<slot />
+					</div>
+				</div>
+
+				<footer class="status-line" aria-label="编辑器状态">
+					<p><span class="mode">NORMAL</span>{currentFile}</p>
+					<p>utf-8 · zh-CN · 100%</p>
+				</footer>
+			</main>
+		</div>
+
+		<slot name="after-workspace" />
+
+		<script>
+			type Theme = 'day' | 'night';
+
+			const themeStorageKey = 'lw-home-theme';
+			const themeToggle = document.querySelector<HTMLButtonElement>('#theme-toggle');
+			const themeIcon = document.querySelector<HTMLSpanElement>('.theme-toggle__icon');
+			const themeLabel = document.querySelector<HTMLSpanElement>('.theme-toggle__label');
+
+			function getStoredTheme(): Theme | null {
+				try {
+					const storedTheme = window.localStorage.getItem(themeStorageKey);
+					return storedTheme === 'day' || storedTheme === 'night' ? storedTheme : null;
+				} catch {
+					return null;
+				}
+			}
+
+			function getSystemTheme(): Theme {
+				return window.matchMedia('(prefers-color-scheme: light)').matches ? 'day' : 'night';
+			}
+
+			function applyTheme(theme: Theme, persist = false) {
+				const isDay = theme === 'day';
+				document.documentElement.dataset.theme = theme;
+				themeToggle?.setAttribute('aria-pressed', String(isDay));
+				themeToggle?.setAttribute(
+					'aria-label',
+					isDay ? '日间主题已启用；切换至夜间主题' : '夜间主题已启用；切换至日间主题',
+				);
+
+				if (themeIcon) themeIcon.textContent = isDay ? '☀' : '☾';
+				if (themeLabel) themeLabel.textContent = isDay ? 'DAY' : 'NIGHT';
+
+				if (persist) {
+					try {
+						window.localStorage.setItem(themeStorageKey, theme);
+					} catch {
+						// Keep the selected theme for this page view if storage is unavailable.
+					}
+				}
+			}
+
+			applyTheme(getStoredTheme() ?? getSystemTheme());
+
+			themeToggle?.addEventListener('click', () => {
+				const currentTheme = document.documentElement.dataset.theme === 'day' ? 'day' : 'night';
+				applyTheme(currentTheme === 'day' ? 'night' : 'day', true);
+			});
+		</script>
+	</body>
+</html>

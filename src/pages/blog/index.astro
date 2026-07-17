@@ -1,10 +1,7 @@
 ---
-import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
-import BaseHead from '../../components/BaseHead.astro';
-import Footer from '../../components/Footer.astro';
+import EditorWorkspace from '../../components/EditorWorkspace.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
-import Header from '../../components/Header.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
 
 const posts = (await getCollection('blog')).sort(
@@ -12,103 +9,129 @@ const posts = (await getCollection('blog')).sort(
 );
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
+<EditorWorkspace
+	title={`${SITE_TITLE} · Articles`}
+	description={SITE_DESCRIPTION}
+	activeTab="articles"
+	currentFile="articles/index.md"
+	bufferState="[RO]"
+	mainLabelledBy="articles-title"
+	pageClass="blog-index"
+>
+	<section aria-labelledby="articles-title">
+		<p class="comment">// 文章目录</p>
+		<h1 id="articles-title" class="blog-index__title"><span aria-hidden="true"># </span>articles/</h1>
+		<p class="blog-index__count">共 {posts.length} 篇文章</p>
+
+		<ul class="file-list">
+			{
+				posts.map((post) => (
+					<li>
+						<a class="file-list__link" href={`/blog/${post.id}/`}>
+							<span class="file-list__title">{post.data.title}</span>
+							<span class="file-list__description">// {post.data.description}</span>
+							<span class="file-list__date">
+								<FormattedDate date={post.data.pubDate} locale="zh-CN" />
+							</span>
+						</a>
+					</li>
+				))
 			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
-		</main>
-		<Footer />
-	</body>
-</html>
+		</ul>
+	</section>
+</EditorWorkspace>
+
+<style>
+	.blog-index__title {
+		margin: 0.25rem 0 0;
+		color: var(--home-blue);
+		font-size: clamp(2.2rem, 7vw, 4.25rem);
+		font-weight: 700;
+		letter-spacing: -0.06em;
+		line-height: 1.1;
+	}
+
+	.blog-index__count {
+		margin: 0.85rem 0 0;
+		color: var(--home-text-muted);
+		font-size: 0.86rem;
+	}
+
+	.file-list {
+		margin: clamp(2.5rem, 7vw, 5rem) 0 0;
+		padding: 0;
+		border-top: 1px solid var(--home-border);
+		list-style: none;
+	}
+
+	.file-list li {
+		margin: 0;
+		border-bottom: 1px solid var(--home-border-subtle);
+	}
+
+	.file-list__link {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		gap: 0.2rem 1.5rem;
+		padding: 1rem 0.85rem;
+		color: inherit;
+		text-decoration: none;
+	}
+
+	.file-list__link::before {
+		grid-column: 1;
+		grid-row: 1 / span 2;
+		align-self: center;
+		color: var(--home-cyan);
+		content: '›';
+	}
+
+	.file-list__link:hover {
+		background: var(--home-chrome);
+	}
+
+	.file-list__title {
+		grid-column: 2;
+		min-width: 0;
+		color: var(--home-text);
+		font-weight: 800;
+	}
+
+	.file-list__description {
+		grid-column: 2;
+		min-width: 0;
+		color: var(--home-text-muted);
+		font-size: 0.84rem;
+	}
+
+	.file-list__date {
+		grid-column: 3;
+		grid-row: 1;
+		align-self: center;
+		color: var(--home-text-secondary);
+		font-size: 0.8rem;
+		white-space: nowrap;
+	}
+
+	.file-list__link:hover .file-list__title {
+		color: var(--home-cyan);
+	}
+
+	@media (max-width: 640px) {
+		.file-list__link {
+			grid-template-columns: auto minmax(0, 1fr);
+			gap: 0.25rem 0.6rem;
+			padding-inline: 0.35rem;
+		}
+
+		.file-list__description {
+			grid-column: 2;
+		}
+
+		.file-list__date {
+			grid-column: 2;
+			grid-row: auto;
+			margin-top: 0.2rem;
+		}
+	}
+</style>
