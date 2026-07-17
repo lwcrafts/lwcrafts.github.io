@@ -4,6 +4,8 @@
   License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
  */
 
+@import "tailwindcss";
+
 :root {
 	--accent: #2337ff;
 	--accent-dark: #000d8a;
@@ -72,6 +74,12 @@ a:hover {
 }
 p {
 	margin-bottom: 1em;
+}
+ul,
+ol {
+	list-style: revert;
+	margin: revert;
+	padding: revert;
 }
 .prose p {
 	margin-bottom: 2em;
